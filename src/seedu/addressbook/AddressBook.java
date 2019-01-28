@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.lang.*;  
 
 /*
  * NOTE : =============================================================
@@ -444,7 +445,7 @@ public class AddressBook {
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
+     * Keyword matching is case insensitive.
      *
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
@@ -478,6 +479,7 @@ public class AddressBook {
 
     /**
      * Retrieves all persons in the full model whose names contain some of the specified keywords.
+     * Will check for equality with case ignored
      *
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
@@ -486,9 +488,14 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
+            for (String words : wordsInName) {
+                for (String key : keywords ){
+                    if (words.equalsIgnoreCase(key)){
+                        matchedPersons.add(person);
+                    }
+                }
             }
+
         }
         return matchedPersons;
     }
